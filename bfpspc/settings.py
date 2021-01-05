@@ -172,7 +172,7 @@ TIME_INPUT_FORMATS = [
 
 DBBACKUP_STORAGE = 'django.core.files.storage.FileSystemStorage'
 if os.name == 'nt':
-    DBBACKUP_STORAGE_OPTIONS = {'location': os.path.abspath(os.path.join(os.path.dirname('c:/src/capres/bfpspc/backups/test.txt')))}
+    DBBACKUP_STORAGE_OPTIONS = {'location': os.path.abspath(os.path.join(os.path.dirname('c:/src/bfpspc/backups/test.txt')))}
 else:
     DBBACKUP_STORAGE_OPTIONS = {'location': os.path.join(BASE_DIR, './backups')}
 

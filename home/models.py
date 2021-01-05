@@ -46,14 +46,14 @@ class Personnel(models.Model):
 
     def full(self):
         delimeter = ' '
-        FullName = [self.Rank, self.FirstName, self.MiddleName, self.LastName]
+        FullName = [self.Rank, self.FirstName, self.LastName]
         FullNameMap = map(lambda i: i.__str__(), FullName)
         FullNameList = list(FullNameMap)
         return delimeter.join(FullNameList)
 
     def __str__(self):
         delimeter = ' '
-        FullName = [self.Rank, self.FirstName, self.MiddleName, self.LastName]
+        FullName = [self.Rank, self.FirstName, self.LastName]
         FullNameMap = map(lambda i: i.__str__(), FullName)
         FullNameList = list(FullNameMap)
         return delimeter.join(FullNameList)
