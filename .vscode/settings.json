@@ -1,5 +1,6 @@
 {
     "files.associations": {
         "*.html": "django-html"
-    }
+    },
+    "git.ignoreLimitWarning": true
 }
