@@ -806,30 +806,30 @@ def analytics(request):
 
     perHour = {}
     for x in range(0, 24):
-        perHour.update({x: incidents.filter(TimeAlarmReceived__hour=x).count()})
+        perHour.update({x: incidents.filter(TimeAlarmReceived__hour=x).filter(Approved=True).count()})
     perDay = {}
     for y in range(1, 8):
-        perDay.update({week(y): incidents.filter(DateAlarmReceived__week_day=y).count()})
+        perDay.update({week(y): incidents.filter(DateAlarmReceived__week_day=y).filter(Approved=True).count()})
     perYear = {}
     for z in range(earliest.DateAlarmReceived.year, (latest.DateAlarmReceived.year + 1)):
-        perYear.update({z: incidents.filter(DateAlarmReceived__year=z).count()})
+        perYear.update({z: incidents.filter(DateAlarmReceived__year=z).filter(Approved=True).count()})
     perMonth = {}
     for w in range(1, 13):
-        perMonth.update({month(w): incidents.filter(DateAlarmReceived__month=w).count()})
+        perMonth.update({month(w): incidents.filter(DateAlarmReceived__month=w).filter(Approved=True).count()})
     overTime = {}
     for x in range(earliest.DateAlarmReceived.year, (latest.DateAlarmReceived.year + 1)):
         if x == earliest.DateAlarmReceived.year:
             for y in range(earliest.DateAlarmReceived.month, 13):
                 overTime.update(
-                    {"%s %s" % (month(y), x): incidents.filter(DateAlarmReceived__year=x, DateAlarmReceived__month=y).count()})
+                    {"%s %s" % (month(y), x): incidents.filter(DateAlarmReceived__year=x, DateAlarmReceived__month=y).filter(Approved=True).count()})
         elif x == latest.DateAlarmReceived.year:
             for y in range(1, (latest.DateAlarmReceived.month + 1)):
                 overTime.update(
-                    {"%s %s" % (month(y), x): incidents.filter(DateAlarmReceived__year=x, DateAlarmReceived__month=y).count()})
+                    {"%s %s" % (month(y), x): incidents.filter(DateAlarmReceived__year=x, DateAlarmReceived__month=y).filter(Approved=True).count()})
         else:
             for y in range(1, 13):
                 overTime.update(
-                    {"%s %s" % (month(y), x): incidents.filter(DateAlarmReceived__year=x, DateAlarmReceived__month=y).count()})
+                    {"%s %s" % (month(y), x): incidents.filter(DateAlarmReceived__year=x, DateAlarmReceived__month=y).filter(Approved=True).count()})
     return render(request, 'analytics.html',
                   {
                       'barangays': barangays,
