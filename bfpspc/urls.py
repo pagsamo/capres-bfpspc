@@ -24,7 +24,7 @@ admin.site.site_title = settings.ADMIN_SITE_TITLE
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('', include('home.urls')),
+    #path('', include('home.urls')),
     path('accounts/', include('django.contrib.auth.urls')),
     path('tinymce/', include('tinymce.urls')),
 ]
@@ -32,4 +32,4 @@ urlpatterns = [
 urlpatterns += staticfiles_urlpatterns()
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
-handler404 = 'home.views.error_404'
+#handler404 = 'home.views.error_404'
