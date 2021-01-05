@@ -1,0 +1,129 @@
+{% extends 'base.html' %}
+{% load leaflet_tags %}
+{% load static %}
+{% block style %}
+    {% leaflet_css plugins="forms" %}
+    <link rel="stylesheet" href="{% static 'css/print.min.css' %}">
+    <link rel="stylesheet" media="print" href="{% static 'css/bootstrap.min.css' %}">
+    <link rel="stylesheet" media="print" href="{% static 'css/print.css' %}">
+
+    <style>
+        table, tr, th, td {
+            border-color: black !important;
+        }
+
+        .table > thead > tr > th, .table>tbody>tr>td {
+            text-align: center;
+        }
+
+        @media screen{
+            .header, .footer, .preparator{ display: none; }
+        }
+
+        @media print{
+            #approverecord, #apor_report{ display: none; }
+            .header,
+            .header-space
+             {
+                height: 100px;
+            }
+            .marginhere{ margin-top:20px !important; margin-bottom:10px !important; }
+        }
+
+        .labelF{ width:150px; display: inline-block; text-transform: uppercase;}
+
+    </style>
+{% endblock style %}
+{% block content %}
+
+
+    <div class="container">
+        <div class="footer">
+            {{ request.build_absolute_uri }} | {% now "SHORT_DATETIME_FORMAT" %}
+        </div>
+        <div class="header" style="background-color: white;">
+            <div class="container">
+                <div class="row">
+                    <div class="col-sm-3 text-center">
+                        <img src="{{ station.BFPLogo.url }}" alt="">
+                    </div>
+                    <div class="col-sm-6 text-center">
+                        <p>Republic of the Philippines</>
+                        <p style="font-weight:bold">Department of the Interior and Local Government</p>
+                        <p style="font-weight: bolder; color: #1A355B; font-size:13px !important">Bureau of Fire Protection</p>
+                        <p>Regional Office IV-A</p>
+                        <p>{{ station.Address }}</p>
+                        <p>Tel. No.{{ station.TelephoneNumber }}/Email: {{ station.EmailAddress }}</p>
+                    </div>
+                    <div class="col-sm-3 text-center">
+                        <img src="{{ station.StationLogo.url }}" alt="">
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <button id="printpage" class="btn btn-lg btn-success" onclick="window.print()">Print</button>
+        <a id="apor_report" href="{% url 'apor_report' incident.id %}"><button  class="btn btn-lg btn-info">APOR Report</button></a>
+        <div class="row" id="spot-report">
+            <table>
+                <thead>
+                <tr>
+                    <td>
+                        <div class="header-space">&nbsp;</div>
+                    </td>
+                </tr>
+                </thead>
+                <tbody>
+                <tr>
+                    <td>
+                        <div class="content">
+                            <div class="container">
+                                <p>MEMORANDUM</p>
+                                <p><span class="labelF">FOR</span> : {{ station.ChiefOfficer }}</p>
+                                <p><span class="labelF">SUBJECT</span> : Spot Investigation Report</p>
+                                <p><span class="labelF">DATE</span> : {% now "F d, Y" %}</p>
+                                <p><span class="labelF">DTPO</span>: {{ incident.DateAlarmReceived|date:"F d,Y" }} at about {{ incident.TimeAlarmReceived|time:"Hi" }}H located at {{ incident.address }}</p>
+                                <p><span class="labelF">Involve</span>: {{ incident.Involved }}</p>
+                                <p><span class="labelF">Name of Establishment</span>: {{ incident.EstablishmentName }}</p>
+                                <p><span class="labelF">Owner</span>: {{ incident.OwnerName }}</p>
+                                <p><span class="labelF">Occupant</span>: {{ incident.Occupant }}</p>
+                                <p><span class="labelF">Casualty - Fatality</span>: {{ incident.casualties.totalDeath }}</p>
+                                <p><span class="labelF">Casualty - Injured</span>: {{ incident.casualties.totalInjured }}</p>
+                                <p><span class="labelF">Estimated Damage</span>: more or less {{ incident.EstimatedDamageCost }}</p>
+                                <p><span class="labelF">Time Fire Started</span>: {{ incident.TimeStarted|time:"Hi" }}H</p>
+                                <p><span class="labelF">Time of Fire Out</span>: {{ incident.DateTimeFireOut|date:"Hi" }}H</p>
+                                <p><span class="labelF">Alarm</span>: {{ incident.Alarm }}</p>
+                                <p class="marginhere" style="margin-top:25px;">Investigation Details:</p>
+                                {% autoescape off %}
+                                {{ incident.InvestigationDetails }}
+                                {% endautoescape %}
+                                <p class="marginhere" style="margin-top:25px;">Disposition</p>
+                                {% autoescape off %}
+                                {{ incident.Disposition }}
+                                {% endautoescape %}
+                                <div class="preparator" style="margin-top:20px; text-align: right">
+                                    <p>{{ user.employee.Rank }} {{ user.get_full_name }}
+                                    <br><span>Investigator</span></p>
+                                </div>
+
+                            </div>
+                        </div>
+                    </td>
+                </tr>
+                </tbody>
+                <tfoot>
+                <tr>
+                    <td>
+                        <div class="footer-space"></div>
+                    </td>
+                </tr>
+                </tfoot>
+            </table>
+        </div>
+    
+
+    </div>
+{% endblock content %}
+{% block scripts %}
+    {% leaflet_js plugins="forms" %}
+{% endblock scripts %}

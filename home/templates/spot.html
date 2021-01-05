@@ -1,0 +1,34 @@
+{% extends 'base.html' %}
+{% load leaflet_tags %}
+{% block style %}
+{{ spotf.media  }}
+<style>
+label{ vertical-align: top; width:15em; text-align:right;}
+</style>
+{% endblock style %}
+{% block content %}
+<div class="container">
+    <div class="row">
+    <h1>Spot Investigation Report</h1>
+    <hr>
+        <form action="{% url 'spot' incident.id %}" method="post">
+            {% csrf_token %}
+            {{ spotf.as_p }}
+            <input type="submit" class="btn btn-lg btn-primary" value="Done">
+        </form>
+    <hr>
+    </div>
+</div>
+{% endblock content %}
+{% block scripts %}
+{% leaflet_js plugins="forms" %}
+<script>
+$(document).ready(function(){
+    $("#id_TimeStarted").flatpickr({
+        enableTime: true,
+        noCalendar: true,
+        time_24hr: true,
+    });
+})
+</script>
+{% endblock scripts %}

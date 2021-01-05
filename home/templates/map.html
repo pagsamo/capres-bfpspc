@@ -1,0 +1,54 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load leaflet_tags %}
+{% block style %}
+    <link rel="stylesheet" href="{% static 'css/leaflet.extra-markers.min.css' %}">
+{% endblock style %}
+{% block content %}
+<nav class="navbar navbar-expand-lg navbar-light bg-light border-bottom">
+    <button class="btn btn-primary" id="menu-toggle">Toggle Menu</button>
+  </nav>
+  <div class="container">
+      <div class="row">
+          <div class="col-3-md"></div>
+          <col-6-md></col-6-md>
+          <div class="col-3-md"></div>
+      </div>
+  </div>
+    {% leaflet_map "mapid" callback="our_marker" %}
+{% endblock content %}
+{% block scripts %}
+<script src="{% static 'js/leaflet.ajax.js' %}"></script>
+<script src="{% static 'js/leaflet.extra-markers.js' %}"></script>
+    <script>
+        function our_marker(map, options) {
+            const incidentCount = new L.GeoJSON.AJAX("{% url 'barangay_incident_count' %}", {
+                onEachFeature: function (feature, layer) {
+                    layer.bindPopup('<h3 style="color: red">Incident Count: ' + feature.properties.IncidentCount.toString() + '</h3><p>Barangay: ' + feature.properties.Name.toString() + '<p>');
+                }
+            });
+
+
+            const incidentInstance = new L.GeoJSON.AJAX("{% url 'incident_datasets' %}", {
+                pointToLayer: function (feature, latlng) {
+                    const fireMarker = L.ExtraMarkers.icon({
+                        icon: 'glyphicon-fire',
+                        markerColor: 'red',
+                        shape: 'circle',
+                        prefix: 'glyphicon'
+                    });
+                    return L.marker(latlng, {icon: fireMarker});
+                },
+                onEachFeature: function (feature, layer) {
+                    layer.bindPopup("<p>Date:"+feature.properties.DateAlarmReceived.toString()+"<br>Time:"+feature.properties.TimeAlarmReceived+"<br>Cause: "+feature.properties.Cause+"<br>Alarm:"+feature.properties.Alarm+"</p>");
+                }
+            });    
+
+            incidentInstance.addTo(map);
+            incidentCount.addTo(map);
+
+        }//function our_marker(map, options) {
+
+
+    </script>
+{% endblock %}

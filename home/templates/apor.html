@@ -1,0 +1,41 @@
+{% extends 'base.html' %}
+{% load leaflet_tags %}
+{% block style %}
+{{ aporMain.media }}
+<style>
+label{ vertical-align: top; width:15em; text-align:right;}
+</style>
+{% endblock style %}
+{% block content %}
+<div class="container">
+    <div class="row">
+    <h1>After Fire Operations</h1>
+    <hr>
+        <form action="{% url 'apor' incident.id %}" method="post">
+            {% csrf_token %}
+            {{ aporMain.as_p }}
+            <input type="submit" class="btn btn-lg btn-primary" value="Next">
+        </form>
+    <hr>
+    </div>
+</div>
+{% endblock content %}
+{% block scripts %}
+{% leaflet_js plugins="forms" %}
+<script>
+$(document).ready(function(){
+    $("#id_DateAlarmReceived").flatpickr();
+    $("#id_TimeAlarmReceived").flatpickr({
+        enableTime: true,
+        noCalendar: true,
+        time_24hr: true,
+    });
+    $("#id_DateTimeUnderControl").flatpickr({
+        enableTime: true,time_24hr: true,
+    });
+     $("#id_DateTimeFireOut").flatpickr({
+        enableTime: true,time_24hr: true,
+    });
+})
+</script>
+{% endblock scripts %}

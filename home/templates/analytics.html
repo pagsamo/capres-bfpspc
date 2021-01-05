@@ -1,0 +1,367 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+<nav class="navbar navbar-expand-lg navbar-light bg-light border-bottom">
+    <button class="btn btn-primary" id="menu-toggle">Toggle Menu</button>
+  </nav>
+    <div class="row">
+        <div class="col-md-3"></div>
+        <div class="col-md-6">
+        {% if prompt %}<div class="alert alert-warning text-center" role="alert">
+            {{prompt}}
+        </div>{% endif %}
+        <form action="{% url 'analytics' %}" method="post" id="date_range">
+            {% csrf_token %}
+            <label for="dateFrom">From: </label><input class='datepicker' type="date" name="dateFrom" id="dateFrom" required value="{% if 'dateFrom' in request.POST %}{{ request.POST.dateFrom }}{% else %}{{ earliest }}{% endif %}">
+            <label for="dateTo">To: </label><input class='datepicker' type="date" name="dateTo" id="dateTo" required value="{% if 'dateTo' in request.POST %}{{ request.POST.dateTo }}{% else %}{{ latest }}{% endif %}">
+            <input type="submit" value="Submit" class="btn btn-large btn-primary">
+        </form>
+        </div>
+        <div class="col-md-3"></div>
+        
+    </div>
+    <div class="row">
+        <div class="recordsDate">
+        </div>
+    </div>
+    <div class="row sections">
+        <div class="col-md-1 hiden-xs"></div>
+        <div class="col-md-10 col-xs-12">
+            <canvas id="perBarangay" width="500" height="300"></canvas>
+        </div>
+        <div class="col-md-1 hidden-xs"></div>
+    </div>
+    <div class="row sections">
+        <div class="col-md-1 hiden-xs"></div>
+        <div class="col-md-10 col-xs-12 overflow-auto">
+            <canvas id="overTime" width="1500" height="400"></canvas>
+        </div>
+        <div class="col-md-1 hidden-xs"></div>
+    </div>
+    <div class="row sections">
+        <div class="col-md-1 hiden-xs"></div>
+        <div class="col-md-10 col-xs-12 overflow-auto">
+            <canvas id="perHour" width="1500" height="400"></canvas>
+        </div>
+        <div class="col-md-1 hidden-xs"></div>
+    </div>
+    <div class="row sections">
+        <div class="col-md-1 hiden-xs"></div>
+        <div class="col-md-10 col-xs-12 overflow-auto">
+            <canvas id="perDay" width="1500" height="400"></canvas>
+        </div>
+        <div class="col-md-1 hidden-xs"></div>
+    </div>
+    <div class="row sections">
+        <div class="col-md-1 hiden-xs"></div>
+        <div class="col-md-10 col-xs-12 overflow-auto">
+            <canvas id="perMonth" width="1500" height="400"></canvas>
+        </div>
+        <div class="col-md-1 hidden-xs"></div>
+    </div>
+    <div class="row sections">
+        <div class="col-md-1 hiden-xs"></div>
+        <div class="col-md-10 col-xs-12 overflow-auto">
+            <canvas id="perYear" width="1500" height="400"></canvas>
+        </div>
+        <div class="col-md-1 hidden-xs"></div>
+    </div>
+{% endblock content %}
+{% block scripts %}
+    <script>
+        $(document).ready(function () {
+            const perBarangay = document.getElementById('perBarangay').getContext('2d');
+            const perBarangayChart = new Chart(perBarangay, {
+                type: 'horizontalBar',
+                data: {
+                    labels: [{% for key, value in perBarangay.items %}
+                        {% if value > 0 %}
+                            '{{ key }}',
+                        {% endif %}
+                    {% endfor %}
+                    ],
+                    datasets: [{
+                        label: 'Number of Fire Incidents Per Barangay',
+                        data: [{% for key, value in perBarangay.items %}
+                            {% if value > 0 %}
+                                '{{ value  }}',
+                            {% endif %}
+                        {% endfor %}
+                        ],
+                        backgroundColor: '#7A5195',
+                        borderWidth: 0
+                    }]
+                },
+                options: {
+                    scales: {
+                        yAxes: [{
+                            ticks: {
+                                beginAtZero: true
+                            }
+                        }],
+                        xAxes: [{
+                            ticks: {
+                                beginAtZero: true
+                            }
+                        }]
+                    },
+                    animation: {
+                        duration: 1999,
+                        easing: 'easeOutBack',
+                    }
+                }
+            });
+            const perHour = document.getElementById('perHour').getContext('2d');
+            const perHourChart = new Chart(perHour, {
+                type: 'line',
+                data: {
+                    labels: [{% for key, value in perHour.items %}
+                        '{{ key }}',
+                    {% endfor %}
+                    ],
+                    datasets: [{
+                        label: 'Number of Fire Incidents Per Hour of the Day',
+                        data: [{% for key, value in perHour.items %}
+                            '{{ value }}',
+                        {% endfor %}
+                        ],
+                        borderColor: '#BC5090',
+                        borderWidth: 3,
+                        fill: false,
+                    }]
+                },
+                options: {
+                    scales: {
+                        yAxes: [{
+                            ticks: {
+                                beginAtZero: true
+                            }
+                        }],
+                        xAxes: [{
+                            ticks: {
+                                beginAtZero: true
+                            }
+                        }]
+                    },
+                    animation: {
+                        duration: 1999,
+                        easing: 'easeOutBack',
+                    }
+                }
+            });
+            const perDay = document.getElementById('perDay').getContext('2d');
+            const perDayChart = new Chart(perDay, {
+                type: 'pie',
+                data: {
+                    labels: [{% for key, value in perDay.items %}
+                        '{{ key }}',
+                    {% endfor %}
+                    ],
+                    datasets: [{
+                        label: 'Number of Fire Incidents Per Weekday',
+                        data: [{% for key, value in perDay.items %}
+                            '{{ value }}',
+                        {% endfor %}
+                        ],
+                        backgroundColor: [
+                            "#003f5c",
+                            "#374c80",
+                            "#7a5195",
+                            "#bc5090",
+                            "#ef5675",
+                            "#ff764a",
+                            "#ffa600",
+                        ],
+                    }],
+                },
+                options: {
+                    animation: {
+                        duration: 1999,
+                        easing: 'easeOutBack',
+                    },
+                    title: {
+                        display: true,
+                        position: "top",
+                        text: "Fire Incidents Per Day of the Week"
+                    },
+                    cutoutPercentage: 40,
+                    tooltips: {
+                        callbacks: {
+                            label: function (tooltipItem, data) {
+                                try {
+                                    let label = ' ' + data.labels[tooltipItem.index] || '';
+
+                                    if (label) {
+                                        label += ': ';
+                                    }
+
+                                    const sum = data.datasets[0].data.reduce((accumulator, curValue) => {
+                                        return parseInt(accumulator) + parseInt(curValue);
+                                    });
+                                    const value = data.datasets[tooltipItem.datasetIndex].data[tooltipItem.index];
+
+                                    label += Number((value / sum) * 100).toFixed(2) + '%';
+                                    return label;
+                                } catch (error) {
+                                    console.log(error);
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+            const perYear = document.getElementById('perYear').getContext('2d');
+            const perYearChart = new Chart(perYear, {
+                type: 'pie',
+                data: {
+                    labels: [{% for key, value in perYear.items %}
+                        '{{ key }}',
+                    {% endfor %}
+                    ],
+                    datasets: [{
+                        label: 'Fire Incidents Per Year',
+                        data: [{% for key, value in perYear.items %}
+                            '{{ value }}',
+                        {% endfor %}
+                        ],
+                        backgroundColor: [
+                            "#003f5c",
+                            "#7a5195",
+                            "#ef5675",
+                            "#ffa600",
+                        ],
+                    }]
+                },
+                options: {
+                    animation: {
+                        duration: 1999,
+                        easing: 'easeOutBack',
+                    },
+                    title: {
+                        display: true,
+                        position: "top",
+                        text: "Fire Incidents Per Year"
+                    },
+                    cutoutPercentage: 40,
+                    tooltips: {
+                        callbacks: {
+                            label: function (tooltipItem, data) {
+                                try {
+                                    let label = ' ' + data.labels[tooltipItem.index] || '';
+
+                                    if (label) {
+                                        label += ': ';
+                                    }
+
+                                    const sum = data.datasets[0].data.reduce((accumulator, curValue) => {
+                                        return parseInt(accumulator) + parseInt(curValue);
+                                    });
+                                    const value = data.datasets[tooltipItem.datasetIndex].data[tooltipItem.index];
+
+                                    label += Number((value / sum) * 100).toFixed(2) + '%';
+                                    return label;
+                                } catch (error) {
+                                    console.log(error);
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+            const perMonth = document.getElementById('perMonth').getContext('2d');
+            const perMonthChart = new Chart(perMonth, {
+                type: 'line',
+                data: {
+                    labels: [{% for key, value in perMonth.items %}
+                        '{{ key }}',
+                    {% endfor %}
+                    ],
+                    datasets: [{
+                        label: 'Number of Fire Incidents Per Month',
+                        data: [{% for key, value in perMonth.items %}
+                            '{{ value }}',
+                        {% endfor %}
+                        ],
+                        borderColor: '#ffa600',
+                        borderWidth: 3,
+                        fill: false,
+                    }]
+                },
+                options: {
+                    scales: {
+                        yAxes: [{
+                            ticks: {
+                                beginAtZero: true
+                            }
+                        }],
+                        xAxes: [{
+                            ticks: {
+                                beginAtZero: true
+                            }
+                        }]
+                    },
+                    animation: {
+                        duration: 1999,
+                        easing: 'easeOutBack',
+                    }
+                }
+            });
+            const overTime = document.getElementById('overTime').getContext('2d');
+            const overTimeChart = new Chart(overTime, {
+                type: 'line',
+                data: {
+                    labels: [{% for key, value in overTime.items %}
+                        '{{ key }}',
+                    {% endfor %}
+                    ],
+                    datasets: [{
+                        label: 'Number of Fire Incidents Over Time',
+                        data: [{% for key, value in overTime.items %}
+                            '{{ value }}',
+                        {% endfor %}
+                        ],
+                        borderColor: '#ef5675',
+                        borderWidth: 3,
+                        fill: false,
+                    }]
+                },
+                options: {
+                    scales: {
+                        yAxes: [{
+                            ticks: {
+                                beginAtZero: true
+                            }
+                        }],
+                        xAxes: [{
+                            ticks: {
+                                beginAtZero: true
+                            }
+                        }]
+                    },
+                    animation: {
+                        duration: 1999,
+                        easing: 'easeOutBack',
+                    }
+                }
+            });
+        })//document ready
+    </script>
+    <script>
+    //validate date entry - date from cannot be greater than date to
+        $(document).ready(function(){
+        $('#date_range').on('submit', function(e) {
+            e.preventDefault();
+            //Validate form and submit
+            var dateFrom = $('#dateFrom').val();
+            var dateTo = $('#dateTo').val();
+            if(dateFrom >= dateTo){
+                alert("Date To should be greater than Date From");
+            }
+            else{
+                this.submit();
+            }
+        });
+        //document ready
+        });
+    </script>
+{% endblock %}

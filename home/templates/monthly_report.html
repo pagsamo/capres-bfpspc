@@ -1,0 +1,145 @@
+{% extends 'base.html' %}
+{% load leaflet_tags %}
+{% load static %}
+{% block style %}
+    {% leaflet_css plugins="forms" %}
+    <link rel="stylesheet" href="{% static 'css/print.min.css' %}">
+    <link rel="stylesheet" media="print" href="{% static 'css/bootstrap.min.css' %}">
+    <link rel="stylesheet" media="print" href="{% static 'css/print.css' %}">
+
+    <style>
+        table, tr, th, td {
+            border-color: black !important;
+        }
+
+        .table > thead > tr > th, .table>tbody>tr>td {
+            text-align: center;
+            vertical-align: middle;
+        }
+
+        @media screen{
+            .header, .footer, .preparator{ display: none; }
+        }
+
+        @media print{
+            #approverecord{ display: none; }
+            .header,
+            .header-space
+             {
+                height: 175px;
+            }
+            .marginhere{ margin-top:20px !important; margin-bottom:10px !important; }
+        }
+
+        .labelF{ width:150px; display: inline-block; text-transform: uppercase;}
+
+    </style>
+{% endblock style %}
+{% block content %}
+
+
+    <div class="container">
+        <div class="footer">
+            {{ request.build_absolute_uri }} | {% now "SHORT_DATETIME_FORMAT" %}
+            printed by:{{ user.employee.Rank }} {{ user.get_full_name }}
+        </div>
+        <div class="header" align="center">
+            <div class="container" align="center">
+                <div class="row">
+                    <div class="col-sm-3 text-center">
+                        <img src="{{ station.BFPLogo.url }}" alt="">
+                    </div>
+                    <div class="col-sm-6 text-center">
+                        <p>Republic of the Philippines</>
+                        <p style="font-weight:bold">Department of the Interior and Local Government</p>
+                        <p style="font-weight: bolder; color: #1A355B; font-size:13px !important">Bureau of Fire Protection</p>
+                        <p>Regional Office IV-A</p>
+                        <p>{{ station.Address }}</p>
+                        <p>Tel. No.{{ station.TelephoneNumber }}/Email: {{ station.EmailAddress }}</p>
+                        <br><br><br>
+                       <p>Fire Incidents for the Month of {{ monthtext }} year {{ year }}{% if barangay != None %}, Barangay: {{ barangay }}{% endif %}</p>
+                    </div>
+                    <div class="col-sm-3 text-center">
+                        <img src="{{ station.StationLogo.url }}" alt="">
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <button id="printpage" class="btn btn-lg btn-success" onclick="window.print()">Print</button>
+        <div class="row" id="spot-report">
+            <table>
+                <thead>
+                <tr align="center">
+                    <td align="center">
+                        <div class="header-space" align="center">&nbsp;</div>
+                    </td>
+                </tr>
+                </thead>
+                <tbody>
+                <tr>
+                    <td>
+                        <div class="content">
+                            
+                                <table class="table table-bordered">
+                                    <thead>
+                                        <tr>
+                                            <th>#</th>
+                                            <th>Date</th>
+                                            <th>Time</th>
+                                            <th>Barangay</th>
+                                            <th>Address</th>
+                                            <th>Owner Name</th>
+                                            <th>Occupant</th>
+                                            <th>Establishment Name</th>
+                                            <th>Alarm</th>
+                                            <th>Damage Cost</th>
+                                            <th>Cause</th>
+                                            <th>Origin</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                    {% for i in incidents %}
+                                            <tr>
+                                                <td>{{ forloop.counter }}</td>
+                                                <td>{{ i.DateAlarmReceived }}</td>
+                                                <td>{{ i.TimeAlarmReceived|time:"Hi"}}H</td>
+                                                <td>{{ i.Barangay }}</td>
+                                                <td>{{ i.address }}</td>
+                                                <td>{{ i.OwnerName }}</td>
+                                                <td>{{ i.Occupant }}</td>
+                                                <td>{{ i.EstablishmentName }}</td>
+                                                <td>{{ i.Alarm }}</td>
+                                                <td>{{ i.DamageCost }}</td>
+                                                <td>{{ i.Cause }}</td>
+                                                <td>{{ i.Origin }}</td>
+                                            </tr>
+                                    {% endfor %}
+                                    </tbody>
+                                    <tfoot>
+                                        <tr>
+                                            <td colspan=12>Total Number of Fire Incidents: <b>{{incidents.count}}</b></td>
+                                        </tr>
+                                    </tfoot>
+                                </table>
+                     {% comment %} break from here {% endcomment %}
+                        </div>
+                    </td>
+                </tr>
+                </tbody>
+                <tfoot>
+                <tr>
+                    <td>
+                        <div class="footer-space"></div>
+                    </td>
+                </tr>
+                </tfoot>
+            </table>
+        </div>
+    
+
+    </div>
+{% endblock content %}
+{% block scripts %}
+    {% leaflet_js plugins="forms" %}
+{% endblock scripts %}
