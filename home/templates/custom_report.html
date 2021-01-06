@@ -102,17 +102,17 @@
                                     {% for i in incidents %}
                                             <tr>
                                                 <td>{{ forloop.counter }}</td>
-                                                <td>{{ i.DateAlarmReceived }}</td>
-                                                <td>{{ i.TimeAlarmReceived|time:"Hi"}}H</td>
-                                                <td>{{ i.Barangay }}</td>
-                                                <td>{{ i.address }}</td>
-                                                <td>{{ i.OwnerName }}</td>
-                                                <td>{{ i.Occupant }}</td>
-                                                <td>{{ i.EstablishmentName }}</td>
-                                                <td>{{ i.Alarm }}</td>
-                                                <td>{{ i.DamageCost }}</td>
-                                                <td>{{ i.Cause }}</td>
-                                                <td>{{ i.Origin }}</td>
+                                                <td>{% if i.DateAlarmReceived != None %}{{ i.DateAlarmReceived }}{% else %}{% endif %}</td>
+                                                <td>{% if i.TimeAlarmReceived != None %}{{ i.TimeAlarmReceived|time:"Hi"}}H{% else %}{% endif %}</td>
+                                                <td>{% if i.Barangay != None %}{{ i.Barangay }}{% else %}{% endif %}</td>
+                                                <td>{% if i.address != None %}{{ i.address }}{% else %}{% endif %}</td>
+                                                <td>{% if i.OwnerName != None %}{{ i.OwnerName }}{% else %}{% endif %}</td>
+                                                <td>{% if i.Occupant != None %}{{ i.Occupant }}{% else %}{% endif %}</td>
+                                                <td>{% if i.EstablishmentName != None %}{{ i.EstablishmentName }}{% else %}{% endif %}</td>
+                                                <td>{% if i.Alarm != None %}{{ i.Alarm }}{% else %}{% endif %}</td>
+                                                <td>{% if i.DamageCost != None %}{{ i.DamageCost }}{% else %}{% endif %}</td>
+                                                <td>{% if i.Cause != None %}{{ i.Cause }}{% else %}{% endif %}</td>
+                                                <td>{% if i.Origin != None %}{{ i.Origin }}{% else %}{% endif %}</td>
                                             </tr>
                                     {% endfor %}
                                     </tbody>
