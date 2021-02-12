@@ -45,6 +45,7 @@ INSTALLED_APPS = [
     'leaflet',
     'home',
     'tinymce',
+    'import_export',
 ]
 
 MIDDLEWARE = [
@@ -146,7 +147,7 @@ if os.name == 'nt':
     os.environ['PROJ_LIB'] = OSGEO4W + r"\share\proj"
     os.environ['PATH'] = OSGEO4W + r"\bin;" + os.environ['PATH']
     GEOS_LIBRARY_PATH = r"C:\OSGeo4W64\bin\geos_c.dll"
-    GDAL_LIBRARY_PATH = r"C:\OSGeo4W64\bin\gdal300.dll"
+    GDAL_LIBRARY_PATH = r"C:\OSGeo4W64\bin\gdal301.dll"
 
 ADMIN_SITE_HEADER = "BFP-SPC GIS Administration"
 ADMIN_SITE_TITLE = "BFP-SPC GIS Administration"
@@ -172,7 +173,7 @@ TIME_INPUT_FORMATS = [
 
 DBBACKUP_STORAGE = 'django.core.files.storage.FileSystemStorage'
 if os.name == 'nt':
-    DBBACKUP_STORAGE_OPTIONS = {'location': os.path.abspath(os.path.join(os.path.dirname('c:/src/bfpspc/backups/test.txt')))}
+    DBBACKUP_STORAGE_OPTIONS = {'location': os.path.abspath(os.path.join(os.path.dirname('c:/src/capres-bfpspc/backups/test.txt')))}
 else:
     DBBACKUP_STORAGE_OPTIONS = {'location': os.path.join(BASE_DIR, './backups')}
 

@@ -5,6 +5,14 @@ from .models import BreathingApparatus, ExtinguisingAgent, Rank, Personnel, Inci
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 from django.contrib.auth.models import User
+from import_export import resources
+from import_export.admin import ImportExportModelAdmin
+
+
+class IncidentResource(resources.ModelResource):
+
+    class Meta:
+        model = Incident
 
 
 class EmployeeInline(admin.StackedInline):
@@ -66,7 +74,7 @@ class RopeAndLadderInline(admin.TabularInline):
 
 
 @admin.register(Incident)
-class IncidentAdmin(LeafletGeoAdmin):
+class IncidentAdmin(ImportExportModelAdmin):
     list_display = ('DateAlarmReceived', 'OwnerName', 'Barangay',)
     # exclude = ('TotalFatalities','Approved',)
     search_fields = ('Barangay__Name', 'OwnerName',)
@@ -75,21 +83,8 @@ class IncidentAdmin(LeafletGeoAdmin):
     ]
     filter = ('Barangay',)
     list_filter = ('Approved', 'Barangay',)
-    # def get_form(self, request, obj=None, **kwargs):
-    #     form = super().get_form(request, obj, **kwargs)
-    #     is_data = True if request.user.groups.all()[0].name == 'data-entry' else False
-    #     disabled_fields = set()
+    resource_class = IncidentResource
 
-    #     if is_data:
-    #         disabled_fields |= {
-    #             'Approved',
-    #         }
-
-    #     for f in disabled_fields:
-    #         if f in form.base_fields:
-    #             form.base_fields[f].disabled = True
-
-    #     return form
 
 
 admin.site.unregister(User)

@@ -25,17 +25,17 @@ class Barangay(models.Model):
     geom = models.MultiPolygonField(srid=4326, null=True, blank=True)
     
 
-#     def IncidentCount(self):
-#         return self.incident_set.filter(Approved=True).count()
+    def IncidentCount(self):
+        return self.incident_set.filter(Approved=True).count()
 
-#     def IncidentInstances(self):
-#         return self.incident_set.filter(Approved=True)
+    def IncidentInstances(self):
+        return self.incident_set.filter(Approved=True)
 
-#     def __str__(self):
-#         return self.Name
+    def __str__(self):
+        return self.Name
 
-#     class Meta:
-#         ordering = ('Name',)
+    class Meta:
+        ordering = ('Name',)
 
 
 
