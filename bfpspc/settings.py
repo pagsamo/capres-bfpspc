@@ -146,7 +146,7 @@ if os.name == 'nt':
     os.environ['PROJ_LIB'] = OSGEO4W + r"\share\proj"
     os.environ['PATH'] = OSGEO4W + r"\bin;" + os.environ['PATH']
     GEOS_LIBRARY_PATH = r"C:\OSGeo4W64\bin\geos_c.dll"
-    GDAL_LIBRARY_PATH = r"C:\OSGeo4W64\bin\gdal300.dll"
+    GDAL_LIBRARY_PATH = r"C:\OSGeo4W64\bin\gdal301.dll"
 
 ADMIN_SITE_HEADER = "BFP-SPC GIS Administration"
 ADMIN_SITE_TITLE = "BFP-SPC GIS Administration"
